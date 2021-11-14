@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 INERTIA_WEIGHT = 0.5
 COGNITIVE_WEIGHT = 0.5
@@ -12,16 +13,16 @@ class NN:
         #Used to setup initial weights - architecture of the NN        
         self.input_layer_size = input_layer_size
         self.hidden_layer_size = hidden_layer_nodes
+        
+        #Initialise Velocity and Weights(position)
         self.init_vel()
         self.weights = self.init_weights()
+        self.output_weights()
         
         #Initially set the best position to the initial random position
         self.best_position = self.weights
-        
-        
-
+        self.best_error = sys.float_info.max
         self.inputs = inputs
-        self.outputs = []
 
     def init_weights(self):
         all_sorted_weights = []
@@ -55,10 +56,19 @@ class NN:
     def sigmoid(self, X, weights):
         z = np.dot(X, weights)
         return (1/ (1 + np.exp(-z)))
+  
+    def output_weights(self):   
+        weights_output = np.random.rand(self.hidden_layer_size[-1], 1)
+        self.weights.append(weights_output)
+
+    def check_best_error(self):
+        if(self.error < self.best_error):
+            self.best_position = self.weights
 
     #Loss Function
-    def cross_entropy(self, y, y_hat):
-        return -(np.multiply(y, np.log(y_hat)) + np.multiply((1-y), np.log(1-y_hat)))
+    def cross_entropy(self, y):
+        self.error =  np.average(-(np.multiply(y, np.log(self.output)) + np.multiply((1-y), np.log(1-self.output))))
+        self.check_best_error()
 
     def forward_pass(self):
         inputs = self.inputs
@@ -69,6 +79,9 @@ class NN:
             self.activations.append(A)
             inputs  = A
 
+        #Setup output_weights
+        
         A_output = self.sigmoid(inputs, self.weights[-1])
+        
         self.activations.append(A_output)
-        self.outputs = A_output
+        self.output = A_output
