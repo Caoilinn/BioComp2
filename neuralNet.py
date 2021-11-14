@@ -31,13 +31,9 @@ class NN:
             # Weights are random values set in a matrix the size of the input at a given layer
             #TODO: Find a better way to randomly set weights
             if(i == 0):
-                #print("Input Layer Size: ", self.input_layer_size)
-                #print("Hidden Layer Nodes: ", self.hidden_layer_size[i])
                 weights_hidden = np.random.rand(self.input_layer_size, self.hidden_layer_size[i]) 
             else:
-                #print("Input Layer Size: ", self.input_layer_size)
-                #print("Hidden Layer Nodes: ", self.hidden_layer_size[i])
-                weights_hidden = np.random.rand(self.hidden_layer_size[i-1], self.hidden_layer_size[i])
+                weights_hidden = np.random.rand(self.hidden_layer_size[i-1], self.hidden_layer_size[i]) 
 
             all_sorted_weights.append(weights_hidden)
         

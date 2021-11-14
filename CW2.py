@@ -37,17 +37,43 @@ for i in range(neuralNet.NUM_PARTICLES):
     particle.cross_entropy(output_matrix)
     swarm.append(particle)
 
+    if(particle.error < best_global_error):
+            best_global_error = particle.error
+            best_global_position = particle.weights
+
 
 max_num_iterations = 1000
 i = 0
 
 
 def update_velocity(particle, global_best):
-    return (neuralNet.INERTIA_WEIGHT * particle.current_vel) + (neuralNet.COGNITIVE_WEIGHT * (particle.best_position - particle.weights)) + (neuralNet.SOCIAL_WEIGHT * (global_best - particle.weight))
+    #print("Particle Current Vel: ", particle.current_vel)
+    #print("particle Weights (Positions): ", particle.weights)
+    #print("particle Best Position: ", particle.best_position)
+    #print("Inertian Val: ", neuralNet.INERTIA_WEIGHT)
+    #print("Intertia Mult: ", neuralNet.INERTIA_WEIGHT * particle.current_vel)
+    #print("Best Position - Current: ", particle.best_position - particle.weights)
+
+    #print(type(np.asmatrix(particle.weights)))
+    
+    #print("Global Best: ", global_best)
+    #print("Position: ", particle.weights)
+    
+    print(neuralNet.INERTIA_WEIGHT * particle.current_vel)
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()
+    
+
+    return (neuralNet.INERTIA_WEIGHT * particle.current_vel) + (neuralNet.COGNITIVE_WEIGHT * np.subtract(particle.best_position ,particle.weights) + (neuralNet.SOCIAL_WEIGHT * np.subtract(global_best, particle.weights)))
     
 
 def update_position(particle):
-    return particle.weights + particle.current_vel
+    print()
+    #return particle.weights + particle.current_vel
 
 
 #PSO
