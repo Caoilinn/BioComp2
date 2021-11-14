@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import neuralNet
 from neuralNet import NN
 
 dataset_inputs = pd.read_csv(
@@ -113,5 +114,22 @@ def update_pos(curr_pos, updated_vel):
 
 #def PSO():
   #  swarm = []
-a = NN(arch['input_layer_size'], arch['hidden_layer_nodes']) 
-print(a.__dict__)
+
+
+
+
+swarm = []
+for i in range(neuralNet.NUM_PARTICLES):
+    particle = NN(arch['input_layer_size'], arch['hidden_layer_nodes'], inputMatrix)
+    swarm.append(particle)
+
+for part in swarm:
+    #print(part.weights)
+    print("Current Vel: ", part.current_vel)
+    #print("Output: ", part.outputs)
+
+for part in swarm:
+    part.forward_pass()
+
+print("Outputs")
+print(swarm[0].outputs)
