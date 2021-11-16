@@ -40,7 +40,24 @@ class NN:
         return all_sorted_weights
     
     def init_vel(self):
-        self.current_vel = np.random.rand(1, 2) 
+        
+        velocities = []
+        for i in range(len(self.hidden_layer_size)):
+        
+            # Weights are random values set in a matrix the size of the input at a given layer
+            #TODO: Find a better way to randomly set weights
+            if(i == 0):
+                velocities_hidden = np.random.rand(self.input_layer_size, self.hidden_layer_size[i]) 
+            else:
+                velocities_hidden = np.random.rand(self.hidden_layer_size[i-1], self.hidden_layer_size[i]) 
+
+            velocities.append(velocities_hidden)
+
+        velocities_output = np.random.rand(self.hidden_layer_size[-1], 1)
+        velocities.append(velocities_output)
+
+        self.current_vel = velocities
+
 
     def update_vel(curr_vel, curr_pos, loc_best_pos, glob_best_pos):
         return (INERTIA_WEIGHT * curr_vel) + (COGNITIVE_WEIGHT * (loc_best_pos - curr_pos)) + (SOCIAL_WEIGHT * (glob_best_pos - curr_pos))

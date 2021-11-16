@@ -16,6 +16,7 @@ dataset_outputs.columns = ["Outputs"]
 output_matrix = np.matrix(dataset_outputs, dtype=None, copy=True)
 inputMatrix = np.matrix(dataset_inputs, dtype=None, copy=True)
 
+
 # Neural Network architecture
 arch = {
     'input_layer_size' : inputMatrix.shape[1],
@@ -47,38 +48,22 @@ i = 0
 
 
 def update_velocity(particle, global_best):
-    #print("Particle Current Vel: ", particle.current_vel)
-    #print("particle Weights (Positions): ", particle.weights)
-    #print("particle Best Position: ", particle.best_position)
-    #print("Inertian Val: ", neuralNet.INERTIA_WEIGHT)
-    #print("Intertia Mult: ", neuralNet.INERTIA_WEIGHT * particle.current_vel)
-    #print("Best Position - Current: ", particle.best_position - particle.weights)
 
-    #print(type(np.asmatrix(particle.weights)))
-    
-    #print("Global Best: ", global_best)
-    #print("Position: ", particle.weights)
-    
-    print(neuralNet.INERTIA_WEIGHT * particle.current_vel)
-    print()
-    print()
-    print()
-    print()
-    print()
-    print()
-    
+    inertia_vel = np.multiply(particle.current_vel, neuralNet.INERTIA_WEIGHT ) 
+    cognitive_factor = neuralNet.COGNITIVE_WEIGHT * np.subtract(particle.best_position ,particle.weights)
+    social_factor = neuralNet.SOCIAL_WEIGHT * np.subtract(global_best, particle.weights)
+   
+    return inertia_vel + cognitive_factor + social_factor
 
-    return (neuralNet.INERTIA_WEIGHT * particle.current_vel) + (neuralNet.COGNITIVE_WEIGHT * np.subtract(particle.best_position ,particle.weights) + (neuralNet.SOCIAL_WEIGHT * np.subtract(global_best, particle.weights)))
-    
 
+   
 def update_position(particle):
-    print()
-    #return particle.weights + particle.current_vel
+    return particle.weights + particle.current_vel
 
 
 #PSO
 while( i < max_num_iterations ):
-    
+    print(f"Iteration {i}")
     for part in swarm:
         new_vel = update_velocity(part, best_global_position)
         part.current_vel = new_vel
