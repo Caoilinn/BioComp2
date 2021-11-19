@@ -2,8 +2,8 @@ import numpy as np
 import sys
 
 INERTIA_WEIGHT = 0.5
-COGNITIVE_WEIGHT = 0.5
-SOCIAL_WEIGHT = 0.5
+COGNITIVE_WEIGHT = 0.9
+SOCIAL_WEIGHT = 1.5
 NUM_PARTICLES = 10
 
 class NN:   
@@ -31,23 +31,21 @@ class NN:
             # Weights are random values set in a matrix the size of the input at a given layer
             #TODO: Find a better way to randomly set weights
             if(i == 0):
-                weights_hidden = np.random.rand(self.input_layer_size, self.hidden_layer_size[i]) 
+                weights_hidden = np.random.rand(self.input_layer_size, self.hidden_layer_size[i]) * 10
             else:
-                weights_hidden = np.random.rand(self.hidden_layer_size[i-1], self.hidden_layer_size[i]) 
+                weights_hidden = np.random.rand(self.hidden_layer_size[i-1], self.hidden_layer_size[i]) * 10
 
             all_sorted_weights.append(weights_hidden)
         
         return all_sorted_weights
     
     def init_vel(self):
-        
         velocities = []
         for i in range(len(self.hidden_layer_size)):
         
             # Weights are random values set in a matrix the size of the input at a given layer
-            #TODO: Find a better way to randomly set weights
             if(i == 0):
-                velocities_hidden = np.random.rand(self.input_layer_size, self.hidden_layer_size[i]) 
+                velocities_hidden = np.random.rand(self.input_layer_size, self.hidden_layer_size[i])
             else:
                 velocities_hidden = np.random.rand(self.hidden_layer_size[i-1], self.hidden_layer_size[i]) 
 
@@ -66,9 +64,13 @@ class NN:
         return curr_pos + updated_vel
 
     #Activation
-    def sigmoid(self, X, weights):
-        z = np.dot(X, weights)
+    def sigmoid(self, inputs, weights):
+        z = np.dot(inputs, weights)
         return (1/ (1 + np.exp(-z)))
+
+    def tanH(self, inputs, weights):
+        z = np.dot(inputs, weights) 
+        return np.divide(np.subtract(np.exp(z), np.exp(-z)) , np.add(np.exp(z), np.exp(-z)))
   
     def output_weights(self):   
         weights_output = np.random.rand(self.hidden_layer_size[-1], 1)
@@ -79,8 +81,8 @@ class NN:
             self.best_position = self.weights
 
     #Loss Function
-    def cross_entropy(self, y):
-        self.error =  np.average(-(np.multiply(y, np.log(self.output)) + np.multiply((1-y), np.log(1-self.output))))
+    def cross_entropy(self, actual_putput):
+        self.error =  np.average(-(np.multiply(actual_putput, np.log(self.output)) + np.multiply((1-actual_putput), np.log(1-self.output))))
         self.check_best_error()
 
     def forward_pass(self):
@@ -88,12 +90,10 @@ class NN:
         self.activations = []
 
         for i in range (len(self.hidden_layer_size)):
-            A = self.sigmoid(inputs, self.weights[i])
+            A = self.tanH(inputs, self.weights[i])
             self.activations.append(A)
             inputs  = A
 
-        #Setup output_weights
-        
         A_output = self.sigmoid(inputs, self.weights[-1])
         
         self.activations.append(A_output)
