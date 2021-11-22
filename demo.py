@@ -36,6 +36,17 @@ def init_weights():
         else:
             Wh = np.random.rand(arch['hidden_layer_nodes'][i-1], arch['hidden_layer_nodes'][i])
 
-init_weights()
-
+#init_weights()
 #print(inputMatrix)
+
+
+INERTIA_WEIGHT = 0.1
+COGNITIVE_WEIGHT = 0.7
+SOCIAL_WEIGHT = 0.9
+
+rand_cog = np.random.uniform(0 , COGNITIVE_WEIGHT)
+rand_soc = np.random.uniform(0 , SOCIAL_WEIGHT)
+
+print(f"Random Cognitive Number is {rand_cog}")
+print(f"Random Social Number is {rand_soc}")
+
